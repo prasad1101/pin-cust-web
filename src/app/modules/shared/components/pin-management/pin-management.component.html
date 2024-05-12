@@ -1,0 +1,124 @@
+<div class="container">
+  <h1 class="display-6 text-center my-2">Add Pin</h1>
+  <form
+    [formGroup]="pinRegistrationForm"
+    class="form-container"
+    (ngSubmit)="onSubmit()"
+  >
+    <div class="container">
+      <div class="form-group mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input
+          type="text"
+          class="form-control"
+          id="title"
+          formControlName="title"
+          [ngClass]="{
+            'is-invalid':
+              pinRegistrationForm.get('title')?.invalid &&
+              pinRegistrationForm.get('title')?.touched
+          }"
+        />
+        <div
+          *ngIf="
+            pinRegistrationForm.get('title')?.invalid &&
+            pinRegistrationForm.get('title')?.touched
+          "
+          class="invalid-feedback"
+        >
+          *Please enter a valid Title
+        </div>
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="image" class="form-label">Select/Drop Image</label>
+        <div
+          ng2FileDrop
+          [ngClass]="{ 'nv-file-over': hasBaseDropZoneOver }"
+          (fileOver)="fileOverBase($event)"
+          [uploader]="uploader"
+          (onFileDrop)="onFileSelected($event)"
+          class="well my-drop-zone"
+        ></div>
+        <input
+          type="file"
+          class="form-control"
+          id="image"
+          #fileInput
+          ng2FileSelect
+          [uploader]="uploader"
+          (change)="onFileSelected($event)"
+          (input)="pinRegistrationForm.patchValue({ image: imageUrl })"
+        />
+        <div
+          *ngIf="
+            pinRegistrationForm.get('image')?.invalid &&
+            pinRegistrationForm.get('image')?.touched
+          "
+          class="invalid-feedback"
+        >
+          *Please select a valid Image
+        </div>
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="collaboratory" class="form-label">Collaboratory</label>
+        <ngx-select
+          id="collaboratory"
+          formControlName="collaboratory"
+          [items]="collaboratory"
+          [(ngModel)]="selectedCollaboratory"
+          [multiple]="true"
+          [ngClass]="{
+            'is-invalid':
+              !selectedCollaboratory &&
+              pinRegistrationForm.get('collaboratory')?.touched
+          }"
+        ></ngx-select>
+        <div
+          *ngIf="
+            !selectedCollaboratory &&
+            pinRegistrationForm.get('collaboratory')?.touched
+          "
+          class="invalid-feedback"
+        >
+          *Please select a valid Collaboratory
+        </div>
+      </div>
+
+      <div class="form-group mb-3">
+        <label>Privacy:</label><br />
+
+        <label class="radio-spacing"
+          ><input type="radio" formControlName="privacy" value="private" />
+          Private</label
+        >
+        <label
+          ><input type="radio" formControlName="privacy" value="public" />
+          Public</label
+        >
+
+        <div
+          *ngIf="
+            pinRegistrationForm.get('privacy')?.invalid &&
+            (pinRegistrationForm.get('privacy')?.dirty ||
+              pinRegistrationForm.get('privacy')?.touched)
+          "
+          class="text-danger"
+        >
+          Please select privacy
+        </div>
+      </div>
+
+      <div class="flex text-center">
+        <button
+          type="submit"
+          class="btn btn-secondary btn-lg text-center"
+          [disabled]="!pinRegistrationForm.valid"
+        >
+          Create Customer
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

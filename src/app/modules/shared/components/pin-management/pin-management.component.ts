@@ -6,6 +6,9 @@ import {
   Validators,
 } from '@angular/forms';
 import { FileItem, FileUploader } from 'ng2-file-upload';
+import Swal from 'sweetalert2';
+import { PinMgmtService } from '../../../../services/pin-mgmt.service';
+import { PinItem } from '../../../../models/pin.model';
 
 @Component({
   selector: 'app-pin-management',
@@ -13,12 +16,19 @@ import { FileItem, FileUploader } from 'ng2-file-upload';
   styleUrls: ['./pin-management.component.scss'],
 })
 export class PinManagementComponent implements OnInit {
+  /**
+   * form controller
+   */
   public pinRegistrationForm = new FormGroup({
     title: new FormControl(''),
     image: new FormControl(''),
     collaboratory: new FormControl(''),
     privacy: new FormControl(''),
   });
+
+  /**
+   * file uploader instance
+   */
   public uploader: FileUploader = new FileUploader({
     itemAlias: 'file',
     url: '',
@@ -30,7 +40,11 @@ export class PinManagementComponent implements OnInit {
 
   public collaboratory = ['Prasad', 'Ankita'];
 
-  public constructor(private fb: FormBuilder) {
+  public constructor(
+    private fb: FormBuilder,
+    public pinService: PinMgmtService
+  ) {
+    //after load event for file
     this.uploader.onAfterAddingFile = (fileItem: FileItem) => {
       const reader = new FileReader();
       reader.onload = () => {
@@ -50,15 +64,15 @@ export class PinManagementComponent implements OnInit {
     });
     if (localStorage.getItem('fileData') !== '') {
       this.imageUrl = localStorage.getItem('fileData');
-      console.log('image url oninit', this.imageUrl);
     } else {
       this.imageUrl = undefined;
     }
   }
 
+  /**
+   * on submit event
+   */
   public onSubmit(): void {
-    console.log('submit', this.pinRegistrationForm);
-
     if (this.pinRegistrationForm.valid) {
       // Process registration logic here
       if (this.uploader.queue.length > 0) {
@@ -75,7 +89,7 @@ export class PinManagementComponent implements OnInit {
       } else {
         console.log('No file selected');
       }
-
+      this.addPin(this.pinRegistrationForm.value as any);
       console.log(this.pinRegistrationForm.value);
     } else {
       // Mark form fields as touched to display validation errors
@@ -84,7 +98,11 @@ export class PinManagementComponent implements OnInit {
     }
   }
 
-  // Helper function to mark all form fields as touched markFormGroup Touched (formGroup: FormGroup) {
+  /**
+   * Helper function to mark all form fields as touched markFormGroup Touched
+   * @param formGroup
+   */
+
   public markFormGroupTouched(formGroup: FormGroup): void {
     Object.values(formGroup.controls).forEach((control) => {
       control.markAsTouched();
@@ -95,11 +113,34 @@ export class PinManagementComponent implements OnInit {
     });
   }
 
-  fileOverBase(event: any): void {
+  /**
+   * file over event
+   * @param event
+   */
+  public fileOverBase(event: any): void {
     this.hasBaseDropZoneOver = event;
   }
 
-  onFileSelected(event: any): void {
+  /**
+   * file select event
+   * @param event
+   */
+  public onFileSelected(event: any): void {
     console.log(event); // This is the file object
+  }
+
+  /**
+   * for adding new pin
+   * @param payload
+   */
+  public addPin(payload: PinItem) {
+    this.pinService.addPin(payload).subscribe((x) => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Pin added successfully!',
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    });
   }
 }

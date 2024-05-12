@@ -7,18 +7,6 @@ export const routes: Routes = [
     path: '',
     component: LandingComponent,
   },
-  {
-    path: 'customer',
-    loadChildren: () =>
-      import('./modules/customer/customer.module').then(
-        (m) => m.CustomerModule
-      ),
-  },
-  {
-    path: 'pin',
-    loadChildren: () =>
-      import('./modules/pin/pin.module').then((m) => m.PinModule),
-  },
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

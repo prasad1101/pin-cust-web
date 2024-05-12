@@ -1,0 +1,112 @@
+<div class="container">
+  <h1 class="display-6 text-center my-2">Add Customer</h1>
+  <form
+    [formGroup]="registrationForm"
+    class="form-container"
+    (ngSubmit)="onSubmit()"
+  >
+    <div class="container">
+      <div class="form-group">
+        <label for="title" class="form-label">Title</label>
+        <input
+          type="text"
+          class="form-control mb-3"
+          id="title"
+          formControlName="title"
+          [ngClass]="{
+            'is-invalid':
+              registrationForm.get('title')?.invalid &&
+              registrationForm.get('title')?.touched
+          }"
+        />
+        <div
+          *ngIf="
+            registrationForm.get('title')?.invalid &&
+            registrationForm.get('title')?.touched
+          "
+          class="invalid-feedback"
+        >
+          *Please enter a valid Title
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="form-label">Email</label>
+        <input
+          type="email"
+          class="form-control mb-3"
+          id="email"
+          formControlName="email"
+          [ngClass]="{
+            'is-invalid':
+              registrationForm.get('email')?.invalid &&
+              registrationForm.get('email')?.touched
+          }"
+        />
+        <div
+          *ngIf="
+            registrationForm.get('email')?.invalid &&
+            registrationForm.get('email')?.touched
+          "
+          class="invalid-feedback"
+        >
+          *Please enter a valid Email
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="region" class="form-label">Region</label>
+        <ngx-select
+          class="mb-3"
+          id="region"
+          formControlName="region"
+          [items]="regionData"
+          [(ngModel)]="selectedRegion"
+          [ngClass]="{
+            'is-invalid':
+              !selectedRegion && registrationForm.get('region')?.touched
+          }"
+        ></ngx-select>
+        <div
+          *ngIf="!selectedRegion && registrationForm.get('region')?.touched"
+          class="invalid-feedback"
+        >
+          *Please select a valid Region
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="country" class="form-label">Country</label>
+
+        <ngx-select
+          class="mb-3"
+          id="country"
+          formControlName="country"
+          [items]="getCountryByRegion(selectedRegion)"
+          [(ngModel)]="selectedCountry"
+          [ngClass]="{
+            'is-invalid':
+              !selectedCountry && registrationForm.get('country')?.touched
+          }"
+        ></ngx-select>
+        <div
+          *ngIf="!selectedCountry && registrationForm.get('country')?.touched"
+          class="invalid-feedback"
+        >
+          *Please select a valid Country
+        </div>
+      </div>
+
+      <!-- Repeat the above structure for other form fields -->
+      <div class="flex text-center mt-3">
+        <button
+          type="submit"
+          class="btn btn-secondary center text-center btn-lg"
+          [disabled]="!registrationForm.valid"
+        >
+          Create Customer
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

@@ -7,6 +7,9 @@ import {
 } from '@angular/forms';
 import { SharedDataService } from '../../../../services/shared-data.service';
 import { CountryData } from '../../../../models/sharedData.model';
+import { CustomerMgmtService } from '../../../../services/customer-mgmt.service';
+import { CustomerItem } from '../../../../models/customer.model';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-customer-registration',
@@ -14,6 +17,9 @@ import { CountryData } from '../../../../models/sharedData.model';
   styleUrls: ['./customer-registration.component.scss'],
 })
 export class CustomerRegistrationComponent implements OnInit {
+  /**
+   * registration form controller
+   */
   public registrationForm = new FormGroup({
     title: new FormControl(''),
     email: new FormControl(''),
@@ -28,7 +34,8 @@ export class CustomerRegistrationComponent implements OnInit {
 
   public constructor(
     private fb: FormBuilder,
-    public sharedDataService: SharedDataService
+    public sharedDataService: SharedDataService,
+    public customerService: CustomerMgmtService
   ) {}
 
   public ngOnInit(): void {
@@ -41,6 +48,9 @@ export class CustomerRegistrationComponent implements OnInit {
     this.getCountryMasterData();
   }
 
+  /**
+   * on submit event handler
+   */
   public onSubmit(): void {
     console.log(
       "registrationForm.get('title').invalid",
@@ -48,8 +58,8 @@ export class CustomerRegistrationComponent implements OnInit {
       this.registrationForm.get('title')?.touched
     );
     if (this.registrationForm.valid) {
-      // Process registration logic here
-
+      // processing registration logic here
+      this.addCustomer(this.registrationForm.value as any);
       console.log(this.registrationForm.value);
     } else {
       // Mark form fields as touched to display validation errors
@@ -58,7 +68,10 @@ export class CustomerRegistrationComponent implements OnInit {
     }
   }
 
-  // Helper function to mark all form fields as touched markFormGroup Touched (formGroup: FormGroup) {
+  /**
+   *    Helper function to mark all form fields as touched markFormGroup Touched
+   * @param formGroup
+   */
   public markFormGroupTouched(formGroup: FormGroup): void {
     Object.values(formGroup.controls).forEach((control) => {
       control.markAsTouched();
@@ -69,6 +82,9 @@ export class CustomerRegistrationComponent implements OnInit {
     });
   }
 
+  /**
+   * for getting country master data
+   */
   public getCountryMasterData() {
     this.sharedDataService.getCountry().subscribe((d: CountryData) => {
       if (d.data) {
@@ -81,11 +97,30 @@ export class CustomerRegistrationComponent implements OnInit {
         });
       }
       this.regionData = Object.keys(this.groupedData);
-      console.log('region data', this.regionData);
-      console.log('groupedData country data', this.groupedData);
     });
   }
+
+  /**
+   * for finding country by region
+   * @param region
+   * @returns
+   */
   public getCountryByRegion(region: string) {
     return this.groupedData[region];
+  }
+
+  /**
+   * for adding new customer
+   * @param payload
+   */
+  public addCustomer(payload: CustomerItem) {
+    this.customerService.addCustomer(payload).subscribe((x) => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Customer added successfully!',
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    });
   }
 }

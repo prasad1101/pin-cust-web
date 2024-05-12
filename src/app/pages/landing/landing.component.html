@@ -1,28 +1,101 @@
-<button type="button" class="btn btn-primary">+ Add Customer</button>
-<button type="button" class="btn btn-primary">+ Add Pin</button>
+<div class="container">
+  <div class="flex button-comtainer">
+    <a
+      data-bs-toggle="modal"
+      data-bs-target="#customerModal"
+      type="button"
+      class="btn btn-secondary btn-lg m-3"
+    >
+      + Add Customer
+    </a>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
-      <th scope="col">Handle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>mdo</td>
-    </tr>
-    <tr>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>fat</td>
-    </tr>
-    <tr>
-      <td colspan="2">Larry the Bird</td>
-      <td>twitter</td>
-    </tr>
-  </tbody>
-</table>
+    <a
+      type="button"
+      data-bs-toggle="modal"
+      data-bs-target="#pinModal"
+      class="btn btn-secondary btn-lg m-3"
+    >
+      + Add Pin
+    </a>
+  </div>
+
+  <div class="mt-3">
+    <h1 class="title display-6">List of pins</h1>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="col">Title</th>
+          <th scope="col">Image</th>
+          <th scope="col">Collaboratory</th>
+          <th scope="col">Privacy</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (one of pinList; track $index) {
+        <tr>
+          <td>{{ one.title }}</td>
+          <td>
+            <img class="pin-img" [src]="one.image" alt="" />
+          </td>
+          <td>{{ one.collaboratory?.join(",") }}</td>
+          <td>{{ one.privacy }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Add customer Modal -->
+<div
+  id="customerModal"
+  aria-labelledby="customerModalLabel"
+  class="modal fade"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <app-customer-registration></app-customer-registration>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add pin Modal -->
+<div
+  id="pinModal"
+  aria-labelledby="pinModalLabel"
+  class="modal fade"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <app-pin-management></app-pin-management>
+      </div>
+    </div>
+  </div>
+</div>
