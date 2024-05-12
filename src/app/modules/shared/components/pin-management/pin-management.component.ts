@@ -49,6 +49,7 @@ export class PinManagementComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = () => {
         this.imageUrl = reader.result as string;
+        localStorage.setItem('fileData', this.imageUrl);
         console.log('imageUrl', this.imageUrl); // This is the base64 string of the file
       };
       reader.readAsDataURL(fileItem._file);
